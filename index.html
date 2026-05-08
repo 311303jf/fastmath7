@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FASTMath7</title>
+<style>
+:root{--bg:#f4f8ff;--card:#fff;--card2:#eef5ff;--text:#102033;--muted:#64748b;--border:#dbeafe;--primary:#2563eb;--primary2:#1d4ed8;--correct:#16a34a;--wrong:#dc2626;--cat1:#2563eb;--cat2:#f97316;--cat3:#9333ea;--cat4:#0f766e;--full:#ef4444}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:linear-gradient(180deg,#e0f2fe,#f8fafc);color:var(--text)}
+.screen{display:none;min-height:100vh;padding:24px}.screen.active{display:block}.header{text-align:center;margin-top:35px}.header h1{font-size:3rem;margin:8px 0;color:#1e3a8a}.sub{color:var(--muted);font-size:.95rem;line-height:1.45}
+.student-panel{max-width:900px;margin:24px auto}.student-box,.qcard,.card{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:22px;box-shadow:0 10px 25px rgba(15,23,42,.08)}
+.student-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:14px}input,select{padding:13px 14px;border:1px solid var(--border);border-radius:14px;font-size:1rem}input:disabled{background:#e5e7eb;color:#94a3b8}
+.student-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}.smallbtn,.btn,.next,.back{border:0;border-radius:999px;background:var(--primary);color:white;font-weight:800;padding:11px 18px;cursor:pointer}.smallbtn:hover,.btn:hover,.next:hover,.back:hover{background:var(--primary2)}.secondary{background:#64748b}
+.section-title{max-width:1100px;margin:30px auto 12px;font-size:1.35rem;font-weight:900;color:#1e3a8a}.grid{max-width:1100px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}.fullrow{max-width:1100px;margin:auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+.card{border-top:8px solid var(--c);cursor:pointer;transition:.2s}.card:hover{transform:translateY(-4px)}.icon{font-size:2.2rem}.tag{display:inline-block;margin-top:8px;background:var(--card2);color:var(--primary);padding:5px 10px;border-radius:999px;font-weight:800;font-size:.8rem}.card h3{margin:12px 0 6px}.card p{color:var(--muted);min-height:55px;line-height:1.35}
+.quiz-head{max-width:1000px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.qtitle{font-size:1.4rem;font-weight:900}.counter{background:white;padding:8px 14px;border-radius:999px;border:1px solid var(--border);font-weight:900}.prog{max-width:1000px;margin:18px auto;height:14px;background:#dbeafe;border-radius:999px;overflow:hidden}.progfill{height:100%;width:0%;background:var(--primary)}
+.body{max-width:1000px;margin:auto}.meta{color:var(--muted);font-weight:800;margin-bottom:10px}.qtext{font-size:1.35rem;font-weight:900;line-height:1.4}.hint{margin-top:10px;color:#0f766e;font-weight:700}.choices{display:grid;gap:12px;margin-top:18px}.choice{background:white;border:2px solid var(--border);border-radius:18px;padding:16px;font-size:1.05rem;text-align:left;cursor:pointer}.choice:hover{border-color:var(--primary)}.choice.correct{border-color:var(--correct);background:#dcfce7}.choice.wrong{border-color:var(--wrong);background:#fee2e2}.letter{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;background:#dbeafe;color:#1e3a8a;border-radius:50%;margin-right:12px;font-weight:900}
+.fb{display:none;margin-top:18px;padding:16px;border-radius:18px;background:#eef5ff}.fb.show{display:block}.fb strong{display:block;margin-bottom:6px}.nav{display:flex;justify-content:space-between;align-items:center;margin-top:18px}.results{max-width:900px;margin:50px auto;text-align:center}.big{font-size:4rem;font-weight:900;color:var(--primary)}.save-status{margin-top:15px;padding:12px;border-radius:14px}.good{background:#dcfce7;color:#166534}.bad{background:#fee2e2;color:#991b1b}.breakdown{text-align:left;margin-top:20px;display:grid;gap:10px}.break-row{background:#f8fafc;border:1px solid var(--border);border-radius:14px;padding:12px}.bar{height:10px;border-radius:999px;background:#dbeafe;overflow:hidden;margin-top:8px}.barfill{height:100%;background:var(--primary)}
+.align-box{max-width:1100px;margin:18px auto;background:white;border:1px solid var(--border);border-radius:20px;padding:16px;color:#334155;line-height:1.45}.footer-credit{text-align:center;padding:24px;color:#64748b;font-size:.9rem;margin-top:40px}
+@media(max-width:650px){.header h1{font-size:2.25rem}.quiz-head{align-items:flex-start;flex-direction:column}.screen{padding:14px}.qtext{font-size:1.15rem}}
+</style>
+</head>
+<body>
+<div id="home" class="screen active">
+<button onclick="openTeacherPanel()" style="position:absolute;top:18px;right:18px;background:white;border:1px solid var(--border);color:var(--primary);border-radius:999px;padding:8px 14px;font-weight:900;cursor:pointer">Teacher Panel</button>
+<div class="header"><div style="font-size:2.8rem">🌴📘</div><h1>FASTMath7</h1><p class="sub">Florida FAST Math Practice · 7th Grade · B.E.S.T. Aligned Practice</p></div>
+<div class="align-box"><b>Teacher Note:</b> This practice site is organized by the Grade 7 FAST Mathematics reporting categories. It includes 200 unique practice questions and 3 separate 40-question mock exams with questions that are not repeated from the practice sets. This tool supports preparation, but no practice website can guarantee a specific FAST score.</div>
+<div class="student-panel"><div class="student-box"><b>Student Information Required</b><p class="sub">Demo Class Code: <b>DEMO7A</b></p><div class="student-grid"><input id="classCode" placeholder="Class Code"></div><div class="student-actions"><button class="smallbtn" onclick="validateClassCode()">Validate Class Code</button><span id="classCodeCheckStatus" class="sub"></span></div><div class="student-grid" style="margin-top:12px"><input id="firstName" placeholder="First Name" disabled><input id="lastName" placeholder="Last Name" disabled><input id="studentId" placeholder="Student ID" disabled></div><div class="student-actions"><button class="smallbtn" onclick="saveStudentInfo()">Save Info / Start Ready</button><button class="smallbtn secondary" onclick="clearStudentInfo()">Clear</button><span id="studentStatus" class="sub"></span></div></div></div>
+<div class="section-title">FASTMath7 Reporting Categories</div><div class="grid" id="domainCards"></div>
+<div class="section-title">Mock Exams</div><div class="fullrow" id="mockCards"></div>
+<div class="footer-credit">Created by <b>Joany Figueredo</b><br>Math Teacher · MDCPS</div>
+</div>
+
+<div id="teacherPanel" class="screen"><div class="quiz-head"><button class="back" onclick="goHome()">← Home</button><div class="qtitle">Teacher/Admin Panel</div></div><div class="body"><div class="qcard"><div class="meta">Create Class Code</div><div class="student-grid"><input id="teacherName" placeholder="Teacher Name"><div style="display:flex;align-items:center;gap:8px"><span style="font-weight:900">Period-</span><input id="teacherPeriod" placeholder="Number Only"></div></div><div class="student-actions"><button class="smallbtn" onclick="createClassCode()">Generate 6-Letter Class Code</button></div><div id="classCodeStatus" class="save-status"></div><div id="teacherSessionCodes"></div></div></div></div>
+
+<div id="practiceMenu" class="screen"><div class="quiz-head"><button class="back" onclick="goHome()">← Home</button><div class="qtitle" id="practiceMenuTitle">Practice Menu</div></div><div class="body"><div class="qcard"><div class="meta" id="practiceMenuMeta"></div><div id="practiceMenuDesc"></div></div><div class="section-title">Choose a Practice</div><div class="grid" id="practiceButtons"></div></div></div>
+
+<div id="quiz" class="screen"><div class="quiz-head"><button class="back" onclick="goHome()">← Home</button><div class="qtitle" id="qtitle">Quiz</div><div class="counter" id="counter">1 / 10</div></div><div class="prog"><div class="progfill" id="progfill"></div></div><div class="body"><div class="qcard"><div class="meta" id="meta"></div><div class="qtext" id="qtext"></div><div class="hint" id="hint"></div></div><div class="choices" id="choices"></div><div class="fb" id="fb"><strong id="fbtitle"></strong><span id="fbtext"></span></div><div class="nav"><div id="live">Score: 0/0</div><button class="next" id="next" onclick="nextQuestion()" disabled>Next →</button></div></div></div>
+
+<div id="results" class="screen"><div class="results"><div style="font-size:5rem" id="emoji">🏆</div><h1 id="rtitle">Results</h1><div class="big" id="bigscore">0%</div><p class="sub" id="rsub"></p><div class="qcard" id="message"></div><div class="breakdown" id="breakdown"></div><div id="saveStatus" class="save-status"></div><button class="next" onclick="goHome()">🏠 Back to Home</button></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='YOUR_SUPABASE_URL';
+const SUPABASE_KEY='YOUR_SUPABASE_ANON_KEY';
+const hasSupabase=SUPABASE_URL&&SUPABASE_KEY&&!SUPABASE_URL.includes('YOUR_')&&!SUPABASE_KEY.includes('YOUR_');
+const supabaseClient=hasSupabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
+
+function makeQ(id,text,choices,answer,explain,benchmark,category,level,hint,skill){return {id,text,choices,answer,explain,std:benchmark,benchmark,category,domain:category,level,hint,skill,itemType:'Multiple Choice'};}
+const levels=['Skill Building','Intermediate','FAST Ready','Applied Reasoning','Mastery Check'];
+
+const BANKS={standard:[
+{title:'Number Sense, Operations, and Algebraic Reasoning',percent:'25–31% of FAST',description:'Rational number operations, integers, expressions, equations, inequalities, and algebraic reasoning.',benchmarks:['MA.7.NSO.1','MA.7.AR.1','MA.7.AR.2'],practices:[]},
+{title:'Proportional Reasoning and Relationships',percent:'22–31% of FAST',description:'Ratios, rates, percents, proportional relationships, constant of proportionality, and real-world applications.',benchmarks:['MA.7.AR.3','MA.7.NSO.2'],practices:[]},
+{title:'Geometric Reasoning',percent:'22–28% of FAST',description:'Scale drawings, angle relationships, circles, area, surface area, volume, and geometric problem solving.',benchmarks:['MA.7.GR.1','MA.7.GR.2'],practices:[]},
+{title:'Data Analysis and Probability',percent:'22–28% of FAST',description:'Random samples, population comparisons, probability, compound events, and data interpretation.',benchmarks:['MA.7.DP.1','MA.7.DP.2'],practices:[]}
+]};
+
+const MOCKS=[
+{title:'Mock Exam 1 – FAST PM3 Practice',tag:'40 Questions',desc:'Balanced review with all reporting categories.'},
+{title:'Mock Exam 2 – Mixed Readiness',tag:'40 Questions',desc:'More multi-step problems and applied contexts.'},
+{title:'Mock Exam 3 – Challenge Version',tag:'40 Questions',desc:'Higher reasoning level for students aiming for stronger scores.'}
+];
+
+function nfmt(x){return Number.isInteger(x)?String(x):String(Number(x.toFixed(2)));}
+function frac(n,d){return `${n}/${d}`;}
+
+function buildPracticeQuestion(category, p, i){
+  const level=levels[p], num=p*10+i+1, id=`P-C${category+1}-${p+1}-${i+1}`;
+  if(category===0){
+    if(i%3===0){const a=-(p+2+i), b=3+p, ans=a+b;return makeQ(id,`What is ${a} + ${b}?`,[String(ans-2),String(ans),String(ans+2),String(a-b)],1,`${a} + ${b} = ${ans}. Use integer rules or a number line to track direction.`,'MA.7.NSO.1',category,level,'For integers, positives move right and negatives move left.','Integer operations');}
+    if(i%3===1){const x=i+p+3,c=p+4,val=3*x-c;return makeQ(id,`Solve for x: 3x - ${c} = ${val}`,[String(x-2),String(x),String(x+1),String(val)],1,`Add ${c} to both sides: 3x = ${val+c}. Then divide by 3: x = ${x}.`,'MA.7.AR.2',category,level,'Use inverse operations in reverse order.','Two-step equations');}
+    const a=2+p,b=i+3,ans=a*b+4;return makeQ(id,`Evaluate ${a}x + 4 when x = ${b}.`,[String(ans-4),String(ans),String(ans+4),String(a+b+4)],1,`Substitute x = ${b}: ${a}(${b}) + 4 = ${a*b} + 4 = ${ans}.`,'MA.7.AR.1',category,level,'Substitute first, then follow order of operations.','Evaluate expressions');
+  }
+  if(category===1){
+    if(i%3===0){const cups=p+2, cookies=(i+4)*cups, newCups=cups*3, ans=cookies*3;return makeQ(id,`A recipe uses ${cups} cups of flour to make ${cookies} cookies. If the relationship is proportional, how many cookies can be made with ${newCups} cups?`,[String(ans-cookies),String(ans),String(ans+cookies),String(cookies+newCups)],1,`The flour amount is multiplied by 3, so the cookies must also be multiplied by 3: ${cookies} × 3 = ${ans}.`,'MA.7.AR.3',category,level,'In a proportional relationship, both quantities change by the same factor.','Proportional relationships');}
+    if(i%3===1){const price=12+p+i, disc=20, ans=price*0.8;return makeQ(id,`A school hoodie costs $${price}. It is on sale for ${disc}% off. What is the sale price?`,[`$${nfmt(price*0.2)}`,`$${nfmt(ans)}`,`$${nfmt(price+price*0.2)}`,`$${nfmt(price-disc)}`],1,`${disc}% off means you pay 80% of the original price: ${price} × 0.80 = ${nfmt(ans)}.`,'MA.7.NSO.2',category,level,'A 20% discount means 80% remains.','Percent applications');}
+    const x=i+2, y=(p+2)*x, k=y/x;return makeQ(id,`The table includes the pair (${x}, ${y}) for a proportional relationship y = kx. What is k?`,[String(k-1),String(k),String(k+1),String(x+y)],1,`The constant of proportionality is k = y ÷ x = ${y} ÷ ${x} = ${k}.`,'MA.7.AR.3',category,level,'Find k using y divided by x.','Constant of proportionality');
+  }
+  if(category===2){
+    if(i%3===0){const r=i+p+3,c=(2*3.14*r).toFixed(2);return makeQ(id,`A circle has radius ${r} units. Using 3.14 for π, what is the approximate circumference?`,[`${(3.14*r).toFixed(2)} units`,`${c} units`,`${(3.14*r*r).toFixed(2)} square units`,`${2*r} units`],1,`Circumference = 2πr = 2 × 3.14 × ${r} = ${c} units.`,'MA.7.GR.1',category,level,'Use C = 2πr.','Circumference');}
+    if(i%3===1){const scale=p+2, drawing=i+3, actual=scale*drawing;return makeQ(id,`On a scale drawing, 1 inch represents ${scale} feet. A wall is ${drawing} inches long on the drawing. What is the actual length?`,[`${actual-scale} ft`,`${actual} ft`,`${actual+scale} ft`,`${drawing+scale} ft`],1,`Multiply the drawing length by the scale: ${drawing} × ${scale} = ${actual} feet.`,'MA.7.GR.1',category,level,'Scale factor connects drawing size to actual size.','Scale drawings');}
+    const l=i+5,w=p+3,h=4,vol=l*w*h;return makeQ(id,`A rectangular prism has length ${l}, width ${w}, and height ${h}. What is its volume?`,[`${l*w} cubic units`,`${vol} cubic units`,`${2*(l*w+l*h+w*h)} cubic units`,`${l+w+h} cubic units`],1,`Volume = length × width × height = ${l} × ${w} × ${h} = ${vol} cubic units.`,'MA.7.GR.2',category,level,'Volume of a rectangular prism is l × w × h.','Volume');
+  }
+  if(category===3){
+    if(i%3===0){const red=i+p+2, total=red+8;return makeQ(id,`A bag has ${red} red tiles and ${total-red} blue tiles. What is the probability of picking a red tile?`,[frac(red,total),frac(total,red),frac(total-red,total),frac(1,red)],0,`Probability = favorable outcomes ÷ total outcomes = ${red}/${total}.`,'MA.7.DP.2',category,level,'Probability is favorable outcomes over total outcomes.','Simple probability');}
+    if(i%3===1){const sample=50+i*2, yes=20+p+i, pct=Math.round(yes/sample*100);return makeQ(id,`In a random sample of ${sample} students, ${yes} preferred soccer. About what percent preferred soccer?`,[`${pct-5}%`,`${pct}%`,`${pct+10}%`,`${yes}%`],1,`Percent = ${yes} ÷ ${sample} × 100 ≈ ${pct}%.`,'MA.7.DP.1',category,level,'Divide part by whole, then multiply by 100.','Random samples');}
+    const a=12+i, b=18+p, diff=Math.abs(b-a);return makeQ(id,`Class A has a mean quiz score of ${a}. Class B has a mean quiz score of ${b}. How many points higher is the greater mean?`,[String(diff-1),String(diff),String(diff+2),String(a+b)],1,`Compare means by subtracting: ${Math.max(a,b)} - ${Math.min(a,b)} = ${diff}.`,'MA.7.DP.1',category,level,'To compare centers, subtract the means.','Comparing populations');
+  }
+}
+
+function buildMockQuestion(mockIndex, category, i){
+  const id=`M${mockIndex+1}-C${category+1}-${i+1}`, level=['FAST PM3 Practice','Mixed Readiness','Challenge'][mockIndex];
+  const shift=mockIndex*40+i+7;
+  if(category===0){
+    if(i%4===0){const x=shift%9+4,c=mockIndex+5,val=4*x+c;return makeQ(id,`Solve: 4x + ${c} = ${val}`,[String(x-1),String(x),String(x+2),String(val-c)],1,`Subtract ${c}: 4x = ${val-c}. Divide by 4: x = ${x}.`,'MA.7.AR.2',category,level,'Undo addition/subtraction first, then multiplication/division.','Equations');}
+    if(i%4===1){const a=-(shift%12+3),b=-(mockIndex+2),ans=a-b;return makeQ(id,`What is ${a} - (${b})?`,[String(ans-4),String(ans),String(ans+4),String(a+b)],1,`Subtracting a negative is the same as adding: ${a} + ${Math.abs(b)} = ${ans}.`,'MA.7.NSO.1',category,level,'Change subtraction of a negative to addition.','Integer operations');}
+    if(i%4===2){const x=shift%6+2, ans=5*x-7;return makeQ(id,`Evaluate 5x - 7 when x = ${x}.`,[String(ans-5),String(ans),String(ans+7),String(5+x-7)],1,`5(${x}) - 7 = ${5*x} - 7 = ${ans}.`,'MA.7.AR.1',category,level,'Substitute and simplify.','Expressions');}
+    const n=shift%7+5, ans=n+6;return makeQ(id,`Which value makes the inequality x - 6 > ${n-1} true?`,[String(n-1),String(n),String(ans),String(n-2)],2,`Add 6 to both sides: x > ${n+5}. A value that works is ${ans}.`,'MA.7.AR.2',category,level,'Solve the inequality before choosing a value.','Inequalities');
+  }
+  if(category===1){
+    if(i%4===0){const unit=mockIndex+3, x=shift%6+3, y=unit*x;return makeQ(id,`A car travels ${y} miles in ${x} gallons of gas. What is the unit rate in miles per gallon?`,[`${unit-1} mpg`,`${unit} mpg`,`${unit+2} mpg`,`${y+x} mpg`],1,`Unit rate = miles ÷ gallons = ${y} ÷ ${x} = ${unit} mpg.`,'MA.7.AR.3',category,level,'Unit rate means per 1 unit.','Unit rate');}
+    if(i%4===1){const original=50+shift, inc=10+mockIndex*5, ans=original*(1+inc/100);return makeQ(id,`A jacket costs $${original}. The price increases by ${inc}%. What is the new price?`,[`$${nfmt(original-inc)}`,`$${nfmt(ans)}`,`$${nfmt(original+inc)}`,`$${nfmt(original*(inc/100))}`],1,`Increase by ${inc}% means multiply by ${1+inc/100}: ${original} × ${1+inc/100} = ${nfmt(ans)}.`,'MA.7.NSO.2',category,level,'For percent increase, add the percent to 100%.','Percent increase');}
+    if(i%4===2){const k=mockIndex+4, x=shift%5+6, y=k*x;return makeQ(id,`In y = kx, y = ${y} when x = ${x}. Find k.`,[String(k-2),String(k),String(k+2),String(y+x)],1,`k = y ÷ x = ${y} ÷ ${x} = ${k}.`,'MA.7.AR.3',category,level,'Divide y by x to find k.','Proportional equations');}
+    const part=shift%9+6,total=part*4;return makeQ(id,`${part} is what percent of ${total}?`,['10%','25%','40%','75%'],1,`${part}/${total} = 1/4 = 25%.`,'MA.7.NSO.2',category,level,'Convert the fraction to a percent.','Percent');
+  }
+  if(category===2){
+    if(i%4===0){const d=shift%10+8,c=(3.14*d).toFixed(2);return makeQ(id,`A circle has diameter ${d} cm. Using 3.14 for π, what is its circumference?`,[`${(3.14*(d/2)).toFixed(2)} cm`,`${c} cm`,`${(3.14*d*d).toFixed(2)} cm`,`${2*d} cm`],1,`Circumference = πd = 3.14 × ${d} = ${c} cm.`,'MA.7.GR.1',category,level,'When diameter is given, use C = πd.','Circumference');}
+    if(i%4===1){const base=shift%8+6,height=mockIndex+5,area=base*height/2;return makeQ(id,`A triangle has base ${base} and height ${height}. What is its area?`,[`${base*height} square units`,`${nfmt(area)} square units`,`${base+height} square units`,`${2*(base+height)} square units`],1,`Area of a triangle = 1/2 × base × height = 1/2 × ${base} × ${height} = ${nfmt(area)}.`,'MA.7.GR.1',category,level,'Triangle area is half of base times height.','Area');}
+    if(i%4===2){const angle=shift%50+40,missing=180-angle;return makeQ(id,`Two supplementary angles have measures ${angle}° and x°. What is x?`,[`${missing-10}°`,`${missing}°`,`${angle}°`,`${180+angle}°`],1,`Supplementary angles add to 180°. x = 180 - ${angle} = ${missing}°.`,'MA.7.GR.1',category,level,'Supplementary angles sum to 180°.','Angle relationships');}
+    const scale=mockIndex+2, actual=(shift%7+5)*scale;return makeQ(id,`A model uses a scale of 1 cm = ${scale} meters. If the actual length is ${actual} meters, what is the model length?`,[`${actual} cm`,`${actual/scale} cm`,`${actual+scale} cm`,`${scale} cm`],1,`Model length = actual length ÷ scale = ${actual} ÷ ${scale} = ${actual/scale} cm.`,'MA.7.GR.1',category,level,'Use the scale to move between actual and model measurements.','Scale drawings');
+  }
+  if(category===3){
+    if(i%4===0){const red=shift%6+3,blue=mockIndex+5,total=red+blue;return makeQ(id,`A spinner has ${red} red sections and ${blue} blue sections of equal size. What is P(blue)?`,[frac(red,total),frac(blue,total),frac(total,blue),frac(1,total)],1,`P(blue) = blue sections ÷ total sections = ${blue}/${total}.`,'MA.7.DP.2',category,level,'Favorable outcomes over total outcomes.','Probability');}
+    if(i%4===1){const n=100+shift*2, like=Math.round(n*.35);return makeQ(id,`A random sample of ${n} students shows ${like} students like jazz. Which estimate is closest to the percent who like jazz?`,['15%','35%','50%','65%'],1,`${like} ÷ ${n} is about 0.35, or 35%.`,'MA.7.DP.1',category,level,'Convert part/whole into a percent.','Random samples');}
+    if(i%4===2){const a=shift%8+4,b=mockIndex+2;return makeQ(id,`A coin and a number cube are tossed. What is the probability of heads and rolling a ${b}?`,['1/2','1/6','1/12','2/6'],2,`P(heads) = 1/2 and P(rolling ${b}) = 1/6. Multiply: 1/2 × 1/6 = 1/12.`,'MA.7.DP.2',category,level,'For independent compound events, multiply probabilities.','Compound probability');}
+    const meanA=70+shift%12,meanB=meanA+mockIndex+3;return makeQ(id,`Two groups have mean scores of ${meanA} and ${meanB}. Which statement is true?`,[`Group A's mean is ${meanB-meanA} points higher.`,`Group B's mean is ${meanB-meanA} points higher.`,`The means are equal.`,`The total is ${meanB-meanA}.`],1,`Since ${meanB} is greater than ${meanA}, Group B's mean is ${meanB-meanA} points higher.`,'MA.7.DP.1',category,level,'Compare centers by subtracting the means.','Comparing populations');
+  }
+}
+
+function buildQuestionBank(){
+  BANKS.standard.forEach((domain,d)=>{for(let p=0;p<5;p++){const practice=[];for(let i=0;i<10;i++){practice.push(buildPracticeQuestion(d,p,i));}domain.practices.push(practice);}});
+}
+buildQuestionBank();
+
+let currentQuiz=[],currentIndex=0,answers=[],detailedAnswers=[],studentInfo={},verifiedClassCode=null,teacherSessionCodes=[],currentTestMode='';
+
+function renderHomeCards(){
+  const colors=['var(--cat1)','var(--cat2)','var(--cat3)','var(--cat4)'];const icons=['🔢','📈','📐','🎲'];const box=document.getElementById('domainCards');box.innerHTML='';
+  BANKS.standard.forEach((domain,i)=>{const card=document.createElement('div');card.className='card';card.style.setProperty('--c',colors[i]);card.onclick=()=>openPracticeMenu(i);card.innerHTML=`<div class="icon">${icons[i]}</div><span class="tag">${domain.percent}</span><h3>${domain.title}</h3><p>${domain.description}</p><button class="btn">Choose Practice →</button>`;box.appendChild(card);});
+  const mockBox=document.getElementById('mockCards');mockBox.innerHTML='';
+  MOCKS.forEach((m,i)=>{const card=document.createElement('div');card.className='card';card.style.setProperty('--c','var(--full)');card.onclick=()=>startMock(i);card.innerHTML=`<div class="icon">🏆</div><span class="tag">${m.tag}</span><h3>${m.title}</h3><p>${m.desc}</p><button class="btn">Start Mock →</button>`;mockBox.appendChild(card);});
+}
+function openTeacherPanel(){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('teacherPanel').classList.add('active');}
+function goHome(){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('home').classList.add('active');}
+function normalizeStudentId(rawId){const id=String(rawId||'').trim();if(!/^\d{7,8}$/.test(id))return null;return id.length===7?'0'+id:id;}
+
+async function validateClassCode(){
+  const rawCode=(document.getElementById('classCode')?.value||'').trim().toUpperCase();const status=document.getElementById('classCodeCheckStatus');
+  if(!rawCode){status.style.color='var(--wrong)';status.textContent='Please enter a class code.';return false;}
+  if(!hasSupabase){
+    const localCodes=JSON.parse(localStorage.getItem('fastMath7ClassCodes')||'[]');const demoOk=rawCode==='DEMO7A';const localMatch=localCodes.find(c=>c.code===rawCode);
+    if(!demoOk&&!localMatch){verifiedClassCode=null;status.style.color='var(--wrong)';status.textContent='Invalid class code. Try DEMO7A.';return false;}
+    verifiedClassCode=rawCode;enableStudentFields();status.style.color='var(--correct)';status.textContent=demoOk?'Class verified: Demo Teacher · Period-7':`Class verified: ${localMatch.teacher} · ${localMatch.period}`;return true;
+  }
+  const {data,error}=await supabaseClient.from('classes').select('class_code, teacher_name, period, active').eq('class_code',rawCode).eq('active',true).limit(1);
+  if(error||!data||data.length===0){verifiedClassCode=null;status.style.color='var(--wrong)';status.textContent='Invalid class code.';return false;}
+  verifiedClassCode=rawCode;enableStudentFields();status.style.color='var(--correct)';status.textContent=`Class verified: ${data[0].teacher_name} · ${data[0].period}`;return true;
+}
+function enableStudentFields(){document.getElementById('classCode').value=verifiedClassCode;document.getElementById('firstName').disabled=false;document.getElementById('lastName').disabled=false;document.getElementById('studentId').disabled=false;}
+function saveStudentInfo(){
+  const firstName=document.getElementById('firstName').value.trim();const lastName=document.getElementById('lastName').value.trim();const rawStudentId=document.getElementById('studentId').value.trim();const classCode=document.getElementById('classCode').value.trim().toUpperCase();const status=document.getElementById('studentStatus');const studentId=normalizeStudentId(rawStudentId);
+  if(!verifiedClassCode||classCode!==verifiedClassCode){status.style.color='var(--wrong)';status.textContent='Please validate your Class Code before starting.';return false;}
+  if(!firstName||!lastName||!studentId){status.style.color='var(--wrong)';status.textContent='Please complete all required fields. Student ID must be 7 or 8 digits.';return false;}
+  studentInfo={firstName,lastName,studentId,classCode};localStorage.setItem('fastMath7StudentInfo',JSON.stringify(studentInfo));document.getElementById('studentId').value=studentId;status.style.color='var(--correct)';status.textContent='Student information ready.';return true;
+}
+function clearStudentInfo(){studentInfo={};verifiedClassCode=null;localStorage.removeItem('fastMath7StudentInfo');['classCode','firstName','lastName','studentId'].forEach(id=>{document.getElementById(id).value='';});document.getElementById('firstName').disabled=true;document.getElementById('lastName').disabled=true;document.getElementById('studentId').disabled=true;document.getElementById('studentStatus').textContent='';document.getElementById('classCodeCheckStatus').textContent='';}
+function generateSixLetterCode(){const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ';let code='';for(let i=0;i<6;i++){code+=letters[Math.floor(Math.random()*letters.length)];}return code;}
+
+async function createClassCode(){
+  const status=document.getElementById('classCodeStatus');const teacherName=document.getElementById('teacherName').value.trim();const periodNumber=document.getElementById('teacherPeriod').value.trim();const period=`Period-${periodNumber}`;
+  if(!teacherName||!periodNumber){status.className='save-status bad';status.textContent='Please enter Teacher Name and Period number.';return;}
+  if(!hasSupabase){
+    const saved=JSON.parse(localStorage.getItem('fastMath7ClassCodes')||'[]');const existing=saved.find(c=>c.teacher===teacherName&&c.period===period);
+    if(existing){status.className='save-status good';status.innerHTML=`Existing Class Code:<br><span style="font-size:2rem;color:var(--correct);font-weight:900">${existing.code}</span>`;teacherSessionCodes.push(existing);renderTeacherSessionCodes();return;}
+    const code=generateSixLetterCode();const newCode={code,teacher:teacherName,period};saved.push(newCode);localStorage.setItem('fastMath7ClassCodes',JSON.stringify(saved));status.className='save-status good';status.innerHTML=`New Class Code Created:<br><span style="font-size:2rem;color:var(--correct);font-weight:900">${code}</span>`;teacherSessionCodes.push(newCode);renderTeacherSessionCodes();return;
+  }
+  const {data:existing}=await supabaseClient.from('classes').select('class_code,teacher_name,period').eq('teacher_name',teacherName).eq('period',period).eq('active',true).limit(1);
+  if(existing&&existing.length){status.className='save-status good';status.innerHTML=`Existing Class Code:<br><span style="font-size:2rem;color:var(--correct);font-weight:900">${existing[0].class_code}</span>`;teacherSessionCodes.push({code:existing[0].class_code,teacher:teacherName,period});renderTeacherSessionCodes();return;}
+  const code=generateSixLetterCode();const {error}=await supabaseClient.from('classes').insert([{class_code:code,teacher_name:teacherName,period:period,class_name:null,active:true}]);
+  if(error){status.className='save-status bad';status.textContent='Error creating class code.';return;}
+  status.className='save-status good';status.innerHTML=`New Class Code Created:<br><span style="font-size:2rem;color:var(--correct);font-weight:900">${code}</span>`;teacherSessionCodes.push({code,teacher:teacherName,period});renderTeacherSessionCodes();
+}
+function renderTeacherSessionCodes(){const box=document.getElementById('teacherSessionCodes');if(!box||teacherSessionCodes.length===0)return;box.innerHTML=`<div class="qcard" style="margin-top:18px"><div class="meta">Codes Created / Found This Session</div>${teacherSessionCodes.map(c=>`<div style="margin:8px 0;padding:10px;border-radius:10px;background:var(--card2)"><b>${c.code}</b> · ${c.teacher} · ${c.period}</div>`).join('')}</div>`;}
+
+function openPracticeMenu(domainIndex){
+  if(!saveStudentInfo())return;const domain=BANKS.standard[domainIndex];document.getElementById('practiceMenuTitle').textContent=domain.title;document.getElementById('practiceMenuMeta').textContent=`${domain.percent} · Benchmarks: ${domain.benchmarks.join(', ')}`;document.getElementById('practiceMenuDesc').textContent=domain.description;
+  const labels=['⭐ Practice 1 – Skill Building','⭐⭐ Practice 2 – Intermediate','⭐⭐⭐ Practice 3 – FAST Ready','🏆 Practice 4 – Applied Reasoning','🔥 Practice 5 – Mastery Check'];const box=document.getElementById('practiceButtons');box.innerHTML='';
+  labels.forEach((label,practiceIndex)=>{const card=document.createElement('div');card.className='card';card.style.setProperty('--c','var(--primary)');card.onclick=()=>startQuiz(domainIndex,practiceIndex);card.innerHTML=`<div class="icon">${practiceIndex+1}</div><span class="tag">10 Questions</span><h3>${label}</h3><p>${domain.title} · Practice set ${practiceIndex+1}</p><button class="btn">Start Practice →</button>`;box.appendChild(card);});
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('practiceMenu').classList.add('active');
+}
+
+function startQuiz(domainIndex,practiceIndex){
+  if(!saveStudentInfo())return;const domain=BANKS.standard[domainIndex];currentQuiz=[...domain.practices[practiceIndex]];currentIndex=0;answers=[];detailedAnswers=[];currentTestMode=`${domain.title} Practice ${practiceIndex+1}`;document.getElementById('qtitle').textContent=`${domain.title} · Practice ${practiceIndex+1}`;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('quiz').classList.add('active');renderQuestion();
+}
+
+function startMock(mockIndex){
+  if(!saveStudentInfo())return;
+  const targetByCat=[11,10,10,9]; // 40 questions, weighted close to the Grade 7 FAST blueprint
+  currentQuiz=[];
+  targetByCat.forEach((count,cat)=>{for(let i=0;i<count;i++){currentQuiz.push(buildMockQuestion(mockIndex,cat,i));}});
+  currentQuiz=shuffleArray(currentQuiz);currentIndex=0;answers=[];detailedAnswers=[];currentTestMode=MOCKS[mockIndex].title;document.getElementById('qtitle').textContent=MOCKS[mockIndex].title;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('quiz').classList.add('active');renderQuestion();
+}
+
+function renderQuestion(){
+  const q=currentQuiz[currentIndex];if(!q)return showResults();document.getElementById('qtext').textContent=q.text;document.getElementById('meta').textContent=`${q.std} · ${q.level} · ${q.itemType} · ${q.skill}`;document.getElementById('hint').textContent=q.hint||'';document.getElementById('counter').textContent=`${currentIndex+1} / ${currentQuiz.length}`;document.getElementById('progfill').style.width=`${(currentIndex/currentQuiz.length)*100}%`;
+  const choices=document.getElementById('choices');choices.innerHTML='';q.choices.forEach((choice,i)=>{const btn=document.createElement('button');btn.className='choice';btn.innerHTML=`<span class="letter">${String.fromCharCode(65+i)}</span>${choice}`;btn.onclick=()=>selectAnswer(i);choices.appendChild(btn);});
+  document.getElementById('fb').classList.remove('show');document.getElementById('next').disabled=true;updateLiveScore();
+}
+function selectAnswer(choiceIndex){
+  const q=currentQuiz[currentIndex];const correct=choiceIndex===q.answer;answers[currentIndex]=correct;detailedAnswers[currentIndex]={correct,benchmark:q.benchmark,category:q.category,skill:q.skill,id:q.id};
+  const buttons=document.querySelectorAll('.choice');buttons.forEach((btn,i)=>{btn.disabled=true;if(i===q.answer){btn.classList.add('correct');}if(i===choiceIndex&&!correct){btn.classList.add('wrong');}});
+  const correctLetter=String.fromCharCode(65+q.answer);const correctAnswer=q.choices[q.answer];document.getElementById('fb').classList.add('show');
+  if(correct){document.getElementById('fbtitle').textContent='Correct! ⭐';document.getElementById('fbtext').innerHTML=`<b>Great Job!</b><br><br>${q.explain}`;}
+  else{document.getElementById('fbtitle').textContent='Incorrect. Let’s review 💪';document.getElementById('fbtext').innerHTML=`<b>Correct Answer:</b><br>${correctLetter}. ${correctAnswer}<br><br><b>Explanation:</b><br>${q.explain}<br><br><b>Strategy Tip:</b><br>${q.hint||'Read carefully and solve step-by-step.'}`;}
+  document.getElementById('next').disabled=false;updateLiveScore();
+}
+function updateLiveScore(){const answered=answers.length;const correct=answers.filter(Boolean).length;document.getElementById('live').textContent=`Score: ${correct}/${answered}`;}
+function nextQuestion(){currentIndex++;if(currentIndex>=currentQuiz.length){showResults();}else{renderQuestion();}}
+function showResults(){
+  const correct=answers.filter(Boolean).length;const total=currentQuiz.length;const pct=total?Math.round((correct/total)*100):0;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('results').classList.add('active');document.getElementById('bigscore').textContent=`${pct}%`;document.getElementById('rsub').textContent=`${correct} out of ${total} correct`;
+  let message='';if(pct>=90){document.getElementById('emoji').textContent='🏆';message='Excellent. Continue with mixed mock tests and review any weak benchmark below.';}else if(pct>=75){document.getElementById('emoji').textContent='⭐';message='Good progress. Review the lowest reporting category and retake that practice.';}else{document.getElementById('emoji').textContent='💪';message='Keep practicing. Focus first on the categories below 70%.';}
+  document.getElementById('message').textContent=message;renderBreakdown();submitResult(correct,total,pct);
+}
+function renderBreakdown(){
+  const breakdown=document.getElementById('breakdown');const byCategory={},byBenchmark={};
+  detailedAnswers.forEach(a=>{if(!a)return;if(!byCategory[a.category])byCategory[a.category]={correct:0,total:0};byCategory[a.category].total++;if(a.correct)byCategory[a.category].correct++;if(!byBenchmark[a.benchmark])byBenchmark[a.benchmark]={correct:0,total:0};byBenchmark[a.benchmark].total++;if(a.correct)byBenchmark[a.benchmark].correct++;});
+  let html='<h3>Reporting Category Breakdown</h3>';Object.keys(byCategory).forEach(catIndex=>{const domain=BANKS.standard[Number(catIndex)];const b=byCategory[catIndex];const pct=Math.round((b.correct/b.total)*100);html+=`<div class="break-row"><b>${domain.title}</b><br><span class="sub">${b.correct}/${b.total} correct · ${pct}%</span><div class="bar"><div class="barfill" style="width:${pct}%"></div></div></div>`;});
+  html+='<h3>Benchmark Breakdown</h3>';Object.keys(byBenchmark).sort().forEach(bm=>{const b=byBenchmark[bm];const pct=Math.round((b.correct/b.total)*100);html+=`<div class="break-row"><b>${bm}</b><br><span class="sub">${b.correct}/${b.total} correct · ${pct}%</span><div class="bar"><div class="barfill" style="width:${pct}%"></div></div></div>`;});
+  const weak=Object.keys(byCategory).filter(catIndex=>{const b=byCategory[catIndex];return Math.round((b.correct/b.total)*100)<75;}).map(catIndex=>BANKS.standard[Number(catIndex)].title);
+  if(weak.length){html+=`<div class="break-row" style="border-color:#f97316"><b>Recommended Review:</b><br>${weak.join('<br>')}</div>`;}else{html+=`<div class="break-row" style="border-color:#16a34a"><b>Recommended Review:</b><br>Continue mixed mock tests to build stamina.</div>`;}
+  breakdown.innerHTML=html;
+}
+async function submitResult(correct,total,pct){
+  const status=document.getElementById('saveStatus');const fullName=`${studentInfo.firstName} ${studentInfo.lastName}`;const isMockTest=currentTestMode.toLowerCase().includes('mock');
+  const resultToSave={first_name:studentInfo.firstName,last_name:studentInfo.lastName,student_name:fullName,student_id:studentInfo.studentId,class_code:studentInfo.classCode,test_mode:currentTestMode,completion_type:isMockTest?'test':'practice',completed:true,attempt_number:isMockTest?1:null,score:`${correct}/${total}`,percent:pct,questions_total:total,correct:correct,best_score:pct,breakdown:JSON.stringify(detailedAnswers),created_at:new Date().toISOString()};
+  if(!hasSupabase){const localResults=JSON.parse(localStorage.getItem('fastMath7Results')||'[]');localResults.push(resultToSave);localStorage.setItem('fastMath7Results',JSON.stringify(localResults));status.className='save-status good';status.textContent='Result saved locally. Supabase is not connected yet.';return;}
+  const {error}=await supabaseClient.from('test_results').insert([resultToSave]);if(error){status.className='save-status bad';status.textContent='Error saving result.';return;}status.className='save-status good';status.textContent='Result saved successfully.';
+}
+function shuffleArray(arr){return arr.map(value=>({value,sort:Math.random()})).sort((a,b)=>a.sort-b.sort).map(({value})=>value);}
+window.addEventListener('load',()=>{renderHomeCards();});
+</script>
+</body>
+</html>
