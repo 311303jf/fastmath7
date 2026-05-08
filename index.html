@@ -256,8 +256,27 @@ function openPracticeMenu(domainIndex){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('practiceMenu').classList.add('active');
 }
 
+
+function randomizeQuestionChoices(q){
+  const choiceObjects = q.choices.map((choice, index) => ({ choice, wasCorrect: index === q.answer }));
+  for(let i = choiceObjects.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [choiceObjects[i], choiceObjects[j]] = [choiceObjects[j], choiceObjects[i]];
+  }
+  const newAnswer = choiceObjects.findIndex(item => item.wasCorrect);
+  return {
+    ...q,
+    choices: choiceObjects.map(item => item.choice),
+    answer: newAnswer
+  };
+}
+
+function prepareQuizQuestions(questions){
+  return questions.map(q => randomizeQuestionChoices(q));
+}
+
 function startQuiz(domainIndex,practiceIndex){
-  if(!saveStudentInfo())return;const domain=BANKS.standard[domainIndex];currentQuiz=[...domain.practices[practiceIndex]];currentIndex=0;answers=[];detailedAnswers=[];currentTestMode=`${domain.title} Practice ${practiceIndex+1}`;document.getElementById('qtitle').textContent=`${domain.title} · Practice ${practiceIndex+1}`;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('quiz').classList.add('active');setCalculatorVisible(true);renderQuestion();
+  if(!saveStudentInfo())return;const domain=BANKS.standard[domainIndex];currentQuiz=prepareQuizQuestions([...domain.practices[practiceIndex]]);currentIndex=0;answers=[];detailedAnswers=[];currentTestMode=`${domain.title} Practice ${practiceIndex+1}`;document.getElementById('qtitle').textContent=`${domain.title} · Practice ${practiceIndex+1}`;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('quiz').classList.add('active');setCalculatorVisible(true);renderQuestion();
 }
 
 function startMock(mockIndex){
@@ -265,7 +284,7 @@ function startMock(mockIndex){
   const targetByCat=[11,10,10,9]; // 40 questions, weighted close to the Grade 7 FAST blueprint
   currentQuiz=[];
   targetByCat.forEach((count,cat)=>{for(let i=0;i<count;i++){currentQuiz.push(buildMockQuestion(mockIndex,cat,i));}});
-  currentQuiz=shuffleArray(currentQuiz);currentIndex=0;answers=[];detailedAnswers=[];currentTestMode=MOCKS[mockIndex].title;document.getElementById('qtitle').textContent=MOCKS[mockIndex].title;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('quiz').classList.add('active');setCalculatorVisible(true);renderQuestion();
+  currentQuiz=prepareQuizQuestions(shuffleArray(currentQuiz));currentIndex=0;answers=[];detailedAnswers=[];currentTestMode=MOCKS[mockIndex].title;document.getElementById('qtitle').textContent=MOCKS[mockIndex].title;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('quiz').classList.add('active');setCalculatorVisible(true);renderQuestion();
 }
 
 function renderQuestion(){
