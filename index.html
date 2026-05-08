@@ -17,6 +17,8 @@
 .body{max-width:1000px;margin:auto}.meta{color:var(--muted);font-weight:800;margin-bottom:10px}.qtext{font-size:1.35rem;font-weight:900;line-height:1.4}.hint{margin-top:10px;color:#0f766e;font-weight:700}.choices{display:grid;gap:12px;margin-top:18px}.choice{background:white;border:2px solid var(--border);border-radius:18px;padding:16px;font-size:1.05rem;text-align:left;cursor:pointer}.choice:hover{border-color:var(--primary)}.choice.correct{border-color:var(--correct);background:#dcfce7}.choice.wrong{border-color:var(--wrong);background:#fee2e2}.letter{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;background:#dbeafe;color:#1e3a8a;border-radius:50%;margin-right:12px;font-weight:900}
 .fb{display:none;margin-top:18px;padding:16px;border-radius:18px;background:#eef5ff}.fb.show{display:block}.fb strong{display:block;margin-bottom:6px}.nav{display:flex;justify-content:space-between;align-items:center;margin-top:18px}.results{max-width:900px;margin:50px auto;text-align:center}.big{font-size:4rem;font-weight:900;color:var(--primary)}.save-status{margin-top:15px;padding:12px;border-radius:14px}.good{background:#dcfce7;color:#166534}.bad{background:#fee2e2;color:#991b1b}.breakdown{text-align:left;margin-top:20px;display:grid;gap:10px}.break-row{background:#f8fafc;border:1px solid var(--border);border-radius:14px;padding:12px}.bar{height:10px;border-radius:999px;background:#dbeafe;overflow:hidden;margin-top:8px}.barfill{height:100%;background:var(--primary)}
 .align-box{max-width:1100px;margin:18px auto;background:white;border:1px solid var(--border);border-radius:20px;padding:16px;color:#334155;line-height:1.45}.footer-credit{text-align:center;padding:24px;color:#64748b;font-size:.9rem;margin-top:40px}
+
+.calc-fab{position:fixed;right:20px;bottom:20px;z-index:999;background:var(--primary);color:white;border:0;border-radius:999px;padding:13px 18px;font-weight:900;box-shadow:0 12px 28px rgba(37,99,235,.35);cursor:pointer;display:none}.calc-fab.show{display:block}.calc-panel{position:fixed;right:20px;bottom:82px;width:320px;max-width:calc(100vw - 28px);background:white;border:1px solid var(--border);border-radius:22px;box-shadow:0 18px 45px rgba(15,23,42,.22);z-index:1000;display:none;overflow:hidden}.calc-panel.show{display:block}.calc-top{display:flex;align-items:center;justify-content:space-between;background:#eff6ff;padding:12px 14px;border-bottom:1px solid var(--border);font-weight:900;color:#1e3a8a}.calc-close{border:0;background:white;color:var(--primary);border-radius:999px;padding:6px 10px;font-weight:900;cursor:pointer}.calc-body{padding:14px}.calc-display{width:100%;height:52px;border:1px solid var(--border);border-radius:14px;padding:10px;font-size:1.25rem;text-align:right;margin-bottom:10px;background:#f8fafc}.calc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}.calc-key{border:1px solid var(--border);background:#f8fafc;border-radius:12px;padding:10px 6px;font-weight:900;cursor:pointer}.calc-key:hover{background:#e0f2fe}.calc-op{background:#dbeafe;color:#1e3a8a}.calc-eq{background:var(--primary);color:white}.calc-clear{background:#fee2e2;color:#991b1b}.calc-note{font-size:.75rem;color:var(--muted);line-height:1.35;margin-top:10px}
 @media(max-width:650px){.header h1{font-size:2.25rem}.quiz-head{align-items:flex-start;flex-direction:column}.screen{padding:14px}.qtext{font-size:1.15rem}}
 </style>
 </head>
@@ -38,6 +40,43 @@
 <div id="quiz" class="screen"><div class="quiz-head"><button class="back" onclick="goHome()">← Home</button><div class="qtitle" id="qtitle">Quiz</div><div class="counter" id="counter">1 / 10</div></div><div class="prog"><div class="progfill" id="progfill"></div></div><div class="body"><div class="qcard"><div class="meta" id="meta"></div><div class="qtext" id="qtext"></div><div class="hint" id="hint"></div></div><div class="choices" id="choices"></div><div class="fb" id="fb"><strong id="fbtitle"></strong><span id="fbtext"></span></div><div class="nav"><div id="live">Score: 0/0</div><button class="next" id="next" onclick="nextQuestion()" disabled>Next →</button></div></div></div>
 
 <div id="results" class="screen"><div class="results"><div style="font-size:5rem" id="emoji">🏆</div><h1 id="rtitle">Results</h1><div class="big" id="bigscore">0%</div><p class="sub" id="rsub"></p><div class="qcard" id="message"></div><div class="breakdown" id="breakdown"></div><div id="saveStatus" class="save-status"></div><button class="next" onclick="goHome()">🏠 Back to Home</button></div></div>
+
+
+<button id="calcFab" class="calc-fab" onclick="toggleCalculator()">🧮 Calculator</button>
+<div id="calcPanel" class="calc-panel">
+  <div class="calc-top"><span>Scientific Calculator</span><button class="calc-close" onclick="toggleCalculator(false)">Close</button></div>
+  <div class="calc-body">
+    <input id="calcDisplay" class="calc-display" value="" placeholder="0" readonly>
+    <div class="calc-grid">
+      <button class="calc-key calc-clear" onclick="calcClear()">C</button>
+      <button class="calc-key calc-op" onclick="calcBack()">⌫</button>
+      <button class="calc-key calc-op" onclick="calcInput('(')">(</button>
+      <button class="calc-key calc-op" onclick="calcInput(')')">)</button>
+      <button class="calc-key calc-op" onclick="calcInput('/')">÷</button>
+      <button class="calc-key" onclick="calcInput('7')">7</button>
+      <button class="calc-key" onclick="calcInput('8')">8</button>
+      <button class="calc-key" onclick="calcInput('9')">9</button>
+      <button class="calc-key calc-op" onclick="calcInput('*')">×</button>
+      <button class="calc-key calc-op" onclick="calcInput('sqrt(')">√</button>
+      <button class="calc-key" onclick="calcInput('4')">4</button>
+      <button class="calc-key" onclick="calcInput('5')">5</button>
+      <button class="calc-key" onclick="calcInput('6')">6</button>
+      <button class="calc-key calc-op" onclick="calcInput('-')">−</button>
+      <button class="calc-key calc-op" onclick="calcInput('^')">xʸ</button>
+      <button class="calc-key" onclick="calcInput('1')">1</button>
+      <button class="calc-key" onclick="calcInput('2')">2</button>
+      <button class="calc-key" onclick="calcInput('3')">3</button>
+      <button class="calc-key calc-op" onclick="calcInput('+')">+</button>
+      <button class="calc-key calc-op" onclick="calcInput('pi')">π</button>
+      <button class="calc-key" onclick="calcInput('0')">0</button>
+      <button class="calc-key" onclick="calcInput('.')">.</button>
+      <button class="calc-key calc-op" onclick="calcInput('%')">%</button>
+      <button class="calc-key calc-op" onclick="calcInput('abs(')">|x|</button>
+      <button class="calc-key calc-eq" onclick="calcEvaluate()">=</button>
+    </div>
+    <div class="calc-note">Allowed tool for FAST-style practice. Use it for decimals, fractions as division, square roots, powers, percent, and π.</div>
+  </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -131,8 +170,8 @@ function renderHomeCards(){
   const mockBox=document.getElementById('mockCards');mockBox.innerHTML='';
   MOCKS.forEach((m,i)=>{const card=document.createElement('div');card.className='card';card.style.setProperty('--c','var(--full)');card.onclick=()=>startMock(i);card.innerHTML=`<div class="icon">🏆</div><span class="tag">${m.tag}</span><h3>${m.title}</h3><p>${m.desc}</p><button class="btn">Start Mock →</button>`;mockBox.appendChild(card);});
 }
-function openTeacherPanel(){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('teacherPanel').classList.add('active');}
-function goHome(){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('home').classList.add('active');}
+function openTeacherPanel(){setCalculatorVisible(false);document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('teacherPanel').classList.add('active');}
+function goHome(){setCalculatorVisible(false);document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('home').classList.add('active');}
 function normalizeStudentId(rawId){const id=String(rawId||'').trim();if(!/^\d{7,8}$/.test(id))return null;return id.length===7?'0'+id:id;}
 
 async function validateClassCode(){
