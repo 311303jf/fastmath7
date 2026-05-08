@@ -170,8 +170,56 @@ function renderHomeCards(){
   const mockBox=document.getElementById('mockCards');mockBox.innerHTML='';
   MOCKS.forEach((m,i)=>{const card=document.createElement('div');card.className='card';card.style.setProperty('--c','var(--full)');card.onclick=()=>startMock(i);card.innerHTML=`<div class="icon">🏆</div><span class="tag">${m.tag}</span><h3>${m.title}</h3><p>${m.desc}</p><button class="btn">Start Mock →</button>`;mockBox.appendChild(card);});
 }
+
+function setCalculatorVisible(visible){
+  const fab=document.getElementById('calcFab');
+  const panel=document.getElementById('calcPanel');
+  if(!fab||!panel)return;
+  if(visible){
+    fab.classList.add('show');
+  }else{
+    fab.classList.remove('show');
+    panel.classList.remove('show');
+  }
+}
+function toggleCalculator(force){
+  const panel=document.getElementById('calcPanel');
+  if(!panel)return;
+  const shouldShow=(typeof force==='boolean')?force:!panel.classList.contains('show');
+  panel.classList.toggle('show',shouldShow);
+}
+function calcInput(value){
+  const display=document.getElementById('calcDisplay');
+  if(!display)return;
+  display.value+=value;
+}
+function calcClear(){
+  const display=document.getElementById('calcDisplay');
+  if(display)display.value='';
+}
+function calcBack(){
+  const display=document.getElementById('calcDisplay');
+  if(display)display.value=display.value.slice(0,-1);
+}
+function calcEvaluate(){
+  const display=document.getElementById('calcDisplay');
+  if(!display)return;
+  try{
+    let expr=display.value
+      .replace(/π/g,'Math.PI')
+      .replace(/pi/g,'Math.PI')
+      .replace(/sqrt\(/g,'Math.sqrt(')
+      .replace(/abs\(/g,'Math.abs(')
+      .replace(/\^/g,'**')
+      .replace(/(\d+(?:\.\d+)?)%/g,'($1/100)');
+    if(!/^[0-9+\-*/().\sMathPIabssqrteE*]+$/.test(expr)){throw new Error('Invalid input');}
+    const result=Function('return '+expr)();
+    display.value=Number.isFinite(result)?String(Math.round(result*100000000)/100000000):'Error';
+  }catch(e){display.value='Error';}
+}
+
 function openTeacherPanel(){setCalculatorVisible(false);document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('teacherPanel').classList.add('active');}
-function goHome(){setCalculatorVisible(false);document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('home').classList.add('active');}
+function goHome(){setCalculatorVisible(false);document.querySelectorAll('.screen').forEach(screen=>screen.classList.remove('active'));document.getElementById('home').classList.add('active');window.scrollTo({top:0,behavior:'smooth'});}
 function normalizeStudentId(rawId){const id=String(rawId||'').trim();if(!/^\d{7,8}$/.test(id))return null;return id.length===7?'0'+id:id;}
 
 async function validateClassCode(){
@@ -220,7 +268,7 @@ function openPracticeMenu(domainIndex){
 }
 
 function startQuiz(domainIndex,practiceIndex){
-  if(!saveStudentInfo())return;const domain=BANKS.standard[domainIndex];currentQuiz=[...domain.practices[practiceIndex]];currentIndex=0;answers=[];detailedAnswers=[];currentTestMode=`${domain.title} Practice ${practiceIndex+1}`;document.getElementById('qtitle').textContent=`${domain.title} · Practice ${practiceIndex+1}`;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('quiz').classList.add('active');renderQuestion();
+  if(!saveStudentInfo())return;const domain=BANKS.standard[domainIndex];currentQuiz=[...domain.practices[practiceIndex]];currentIndex=0;answers=[];detailedAnswers=[];currentTestMode=`${domain.title} Practice ${practiceIndex+1}`;document.getElementById('qtitle').textContent=`${domain.title} · Practice ${practiceIndex+1}`;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('quiz').classList.add('active');setCalculatorVisible(true);renderQuestion();
 }
 
 function startMock(mockIndex){
@@ -228,7 +276,7 @@ function startMock(mockIndex){
   const targetByCat=[11,10,10,9]; // 40 questions, weighted close to the Grade 7 FAST blueprint
   currentQuiz=[];
   targetByCat.forEach((count,cat)=>{for(let i=0;i<count;i++){currentQuiz.push(buildMockQuestion(mockIndex,cat,i));}});
-  currentQuiz=shuffleArray(currentQuiz);currentIndex=0;answers=[];detailedAnswers=[];currentTestMode=MOCKS[mockIndex].title;document.getElementById('qtitle').textContent=MOCKS[mockIndex].title;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('quiz').classList.add('active');renderQuestion();
+  currentQuiz=shuffleArray(currentQuiz);currentIndex=0;answers=[];detailedAnswers=[];currentTestMode=MOCKS[mockIndex].title;document.getElementById('qtitle').textContent=MOCKS[mockIndex].title;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('quiz').classList.add('active');setCalculatorVisible(true);renderQuestion();
 }
 
 function renderQuestion(){
@@ -247,7 +295,7 @@ function selectAnswer(choiceIndex){
 function updateLiveScore(){const answered=answers.length;const correct=answers.filter(Boolean).length;document.getElementById('live').textContent=`Score: ${correct}/${answered}`;}
 function nextQuestion(){currentIndex++;if(currentIndex>=currentQuiz.length){showResults();}else{renderQuestion();}}
 function showResults(){
-  const correct=answers.filter(Boolean).length;const total=currentQuiz.length;const pct=total?Math.round((correct/total)*100):0;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('results').classList.add('active');document.getElementById('bigscore').textContent=`${pct}%`;document.getElementById('rsub').textContent=`${correct} out of ${total} correct`;
+  const correct=answers.filter(Boolean).length;const total=currentQuiz.length;const pct=total?Math.round((correct/total)*100):0;document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('results').classList.add('active');setCalculatorVisible(false);document.getElementById('bigscore').textContent=`${pct}%`;document.getElementById('rsub').textContent=`${correct} out of ${total} correct`;
   let message='';if(pct>=90){document.getElementById('emoji').textContent='🏆';message='Excellent. Continue with mixed mock tests and review any weak benchmark below.';}else if(pct>=75){document.getElementById('emoji').textContent='⭐';message='Good progress. Review the lowest reporting category and retake that practice.';}else{document.getElementById('emoji').textContent='💪';message='Keep practicing. Focus first on the categories below 70%.';}
   document.getElementById('message').textContent=message;renderBreakdown();submitResult(correct,total,pct);
 }
